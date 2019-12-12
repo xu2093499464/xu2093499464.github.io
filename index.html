@@ -1,23 +1,63 @@
 <html>
 <body>
-<h1>我叫<span id="myname">.</span></h1>
-    <p>我的学号是<span id="mynumber"></span></p>
-        <img src="matrix.png">
-        <img src="1.jpg">
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script>
-            $(function(){
-                $.get("./data.json",function(result){
+<h1>我叫<span id="myname"></span></h1>
+
+    <p>我的学号是<span id="mynumber"></span>
+    </p>
+    <a id="alogin" href="login.html">去登录</a>
+    <a id="alogout" href="#">去注销</a>
+
+    <input type="text">
+    <button id="btnAdd">添加</button>
+<ul id="ul">
+    
+</ul>
+    <script src="jquery-3.4.1.js"></script>
+    <script>
+        $(function(){
+
+            var callback=function (result){
+                if(!result || !result.myname){
+                    $("#alogout").hide();
+                }else{
                     $("#myname").text(result.myname);
                     $("#mynumber").text(result.mynumber);
-                });
-            })
-            $("#btn").click(function(){
-                $.get("./data.json",function(result){
-                    $("#myname").text(result.myname);
-                    $("#mynumber").text(result.mynumber);
-                });
-            })
-        </script>
+                    $("#alogin").hide();
+                }
+             }
+             $.ajax({
+                type:"POST",
+                xhrFields: {
+                        withCredentials: true
+                },
+                url:"http://127.0.0.1:8585/userinfo",
+                contentType:"application/json",
+                success:callback
+             });
+
+            $("#alogout").click(function(){
+                $.ajax({
+                type:"POST",
+                xhrFields: {
+                        withCredentials: true
+                },
+                url:"http://127.0.0.1:8585/logout",
+                success:function(){
+                    location.href="index.html";
+                }
+             });
+            });
+
+   $("#btnAdd").click(function(){
+       $.post("http://127.0.0.1:8585/addlvli",
+                {lvli:$("#content").val()},
+       function(){
+           location.href="index.html"
+       })
+        })
+    
+    })
+
+    </script>
 </body>
 </html>
